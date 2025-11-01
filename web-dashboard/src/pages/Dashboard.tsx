@@ -1,12 +1,12 @@
 
 import React from 'react';
-import Sidebar from '../components/Sidebar';
-import Header from '../components/dashboard/Header';
-import SupplyChainMap from '../components/dashboard/SupplyChainMap';
-import MarketPriceChart from '../components/dashboard/MarketPriceChart';
-import PostHarvestLoss from '../components/dashboard/PostHarvestLoss';
-import TransportPerformance from '../components/dashboard/TransportPerformance';
-import AlertsList from '../components/dashboard/AlertsList';
+import Sidebar from '../components/dashboard/Sidebar.tsx';
+import Header from '../components/dashboard/Header.tsx';
+import SupplyChainMap from '../components/dashboard/SupplyChainMap.tsx';
+import MarketPriceChart from '../components/dashboard/MarketPriceChart.tsx';
+import PostHarvestLoss from '../components/dashboard/PostHarvestLoss.tsx';
+import TransportPerformance from '../components/dashboard/TransportPerformance.tsx';
+import AlertsList from '../components/dashboard/AlertsList.tsx';
 
 const Dashboard: React.FC = () => {
   return (
