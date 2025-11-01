@@ -1,6 +1,5 @@
 import React from 'react';
 import MapCard from '../components/MapCard';
-import PriceChart from '../components/PriceChart';
 import LossCard from '../components/LossCard';
 import TransportTable from '../components/TransportTable';
 import AlertList from '../components/AlertList';
@@ -8,13 +7,16 @@ import AlertList from '../components/AlertList';
 const Overview: React.FC = () => {
   return (
     <div>
-      <h1>Overview</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+      <h1>Supply Chain Overview Dashboard</h1>
+      <p style={{ color: '#666', marginBottom: '20px' }}>
+        Real-time monitoring of agricultural supply chain operations in Ethiopia
+      </p>
+
+      <div className="grid-2">
         <MapCard />
-        <PriceChart />
+        <AlertList />
         <LossCard />
         <TransportTable />
-        <AlertList />
       </div>
     </div>
   );

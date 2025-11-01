@@ -1,4 +1,5 @@
 import React from 'react';
+import { COLORS, getSeverityColor } from '../constants/theme';
 
 interface LossData {
   crop: string;
@@ -53,37 +54,34 @@ const LossCard: React.FC = () => {
 
   const getProgressColor = (current: number, target: number) => {
     const progress = (target - current) / target * 100;
-    if (progress >= 50) return '#4CAF50'; // Green
-    if (progress >= 25) return '#FF9800'; // Orange
-    return '#F44336'; // Red
+    if (progress >= 50) return COLORS.SAFE;
+    if (progress >= 25) return COLORS.WARNING;
+    return COLORS.DANGER;
   };
 
   return (
-    <div style={{
-      border: '1px solid #ccc',
-      padding: '15px',
-      margin: '10px',
-      borderRadius: '8px',
-      backgroundColor: '#f9f9f9'
-    }}>
+    <div className="card">
       <h3>Post-Harvest Loss Overview</h3>
 
       {lossData.map((data, index) => (
         <div key={index} style={{
           marginBottom: '15px',
           padding: '10px',
-          backgroundColor: 'white',
+          backgroundColor: COLORS.CARD_BACKGROUND,
           borderRadius: '6px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          cursor: 'pointer'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h4 style={{ margin: 0 }}>{data.crop}</h4>
+            <h4 style={{ margin: 0, color: getSeverityColor(data.trend === 'up' ? 'high' : data.trend === 'down' ? 'low' : 'medium') }}>
+              {data.crop}
+            </h4>
             <span style={{ fontSize: '1.2em' }}>{getTrendIcon(data.trend)}</span>
           </div>
 
           <div style={{ marginTop: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-              <span>Loss: {data.lossPercentage}%</span>
+              <span style={{ fontWeight: 'bold' }}>Loss: {data.lossPercentage}%</span>
               <span>Target: {data.targetReduction}% reduction</span>
             </div>
 
@@ -101,23 +99,37 @@ const LossCard: React.FC = () => {
               }}></div>
             </div>
 
-            <div style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}>
+            <div style={{ marginTop: '10px', fontSize: '0.9em', color: COLORS.TEXT_LIGHT }}>
               <div>Storage Loss: {data.storageLoss}% | Transport Loss: {data.transportLoss}%</div>
               <div style={{ marginTop: '5px' }}>
                 <strong>Regional Breakdown:</strong>
-                {Object.entries(data.regionBreakdown).map(([region, loss]) => (
-                  <span key={region} style={{ marginRight: '10px' }}>
-                    {region}: {loss}%
-                  </span>
-                ))}
+                <div className="grid-auto-fit" style={{ marginTop: '5px' }}>
+                  {Object.entries(data.regionBreakdown).map(([region, loss]) => (
+                    <span key={region} style={{
+                      padding: '2px 6px',
+                      backgroundColor: getSeverityColor(loss > 15 ? 'high' : loss > 10 ? 'medium' : 'low'),
+                      color: 'white',
+                      borderRadius: '3px',
+                      fontSize: '0.8em'
+                    }}>
+                      {region}: {loss}%
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       ))}
 
-      <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e8f5e8', borderRadius: '6px' }}>
-        <h4 style={{ margin: '0 0 10px 0' }}>Trends Over Time</h4>
+      <div style={{
+        marginTop: '15px',
+        padding: '10px',
+        backgroundColor: '#e8f5e8',
+        borderRadius: '6px',
+        border: `1px solid ${COLORS.SAFE}`
+      }}>
+        <h4 style={{ margin: '0 0 10px 0', color: COLORS.SAFE }}>Trends Over Time</h4>
         <div style={{ fontSize: '0.9em' }}>
           <p>Overall loss reduction: 8.5% improvement in last quarter</p>
           <p>Storage improvements: 12% reduction through better facilities</p>

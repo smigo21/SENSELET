@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { COLORS, getStatusColor } from '../constants/theme';
 
 // Fix for default markers in react-leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -31,16 +32,7 @@ const MapCard: React.FC = () => {
     { id: 3, farmer: 'Farmer C', trader: 'Trader Z', quantity: '150kg', crop: 'Teff', status: 'Delivered', expectedArrival: '2023-10-04', position: { lat: 9.030, lng: 38.740 } },
   ];
 
-  const [hoveredShipment, setHoveredShipment] = useState<Shipment | null>(null);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'On-time': return 'green';
-      case 'Delayed': return 'orange';
-      case 'Delivered': return 'red'; // Changed to red for urgency
-      default: return 'gray';
-    }
-  };
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
 
   const createCustomIcon = (color: string) => {
     return new L.Icon({
@@ -75,9 +67,9 @@ const MapCard: React.FC = () => {
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px' }}>
+    <div className="card">
       <h2>Live Supply Chain Map - Ethiopia</h2>
-      <MapContainer center={[9.145, 38.731]} zoom={7} style={{ height: '400px', width: '100%' }}>
+      <MapContainer center={[9.145, 38.731]} zoom={7} style={{ height: '400px', width: '100%', borderRadius: '8px' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -90,27 +82,74 @@ const MapCard: React.FC = () => {
             key={shipment.id}
             position={[shipment.position.lat, shipment.position.lng]}
             icon={createCustomIcon(getStatusColor(shipment.status))}
+            eventHandlers={{
+              click: () => setSelectedShipment(shipment),
+            }}
           >
             <Popup>
-              <div>
-                <h3>Shipment Details</h3>
+              <div style={{ fontSize: '0.9em' }}>
+                <h3 style={{ margin: '0 0 10px 0', color: getStatusColor(shipment.status) }}>
+                  {shipment.crop} Shipment
+                </h3>
                 <p><strong>Farmer:</strong> {shipment.farmer}</p>
                 <p><strong>Trader:</strong> {shipment.trader}</p>
                 <p><strong>Quantity:</strong> {shipment.quantity}</p>
-                <p><strong>Crop:</strong> {shipment.crop}</p>
-                <p><strong>Status:</strong> {shipment.status}</p>
+                <p><strong>Status:</strong> <span style={{ color: getStatusColor(shipment.status) }}>{shipment.status}</span></p>
                 <p><strong>Expected Arrival:</strong> {shipment.expectedArrival}</p>
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: '10px', fontSize: '0.8em' }}
+                  onClick={() => setSelectedShipment(shipment)}
+                >
+                  View Details
+                </button>
               </div>
             </Popup>
           </Marker>
         ))}
       </MapContainer>
-      <div>
+      <div style={{ marginTop: '15px' }}>
         <h3>Legend</h3>
-        <p><span style={{ color: 'green' }}>●</span> On-time</p>
-        <p><span style={{ color: 'orange' }}>●</span> Delayed</p>
-        <p><span style={{ color: 'red' }}>●</span> Delivered</p>
+        <div className="grid-3">
+          <p><span style={{ color: COLORS.SAFE, fontSize: '1.2em' }}>●</span> On-time</p>
+          <p><span style={{ color: COLORS.WARNING, fontSize: '1.2em' }}>●</span> Delayed</p>
+          <p><span style={{ color: COLORS.DANGER, fontSize: '1.2em' }}>●</span> Delivered</p>
+        </div>
       </div>
+
+      {/* Shipment Details Panel */}
+      {selectedShipment && (
+        <div style={{
+          marginTop: '15px',
+          padding: '15px',
+          backgroundColor: COLORS.CARD_BACKGROUND,
+          borderRadius: '8px',
+          border: `1px solid ${COLORS.BORDER}`
+        }}>
+          <h3 style={{ margin: '0 0 10px 0', color: getStatusColor(selectedShipment.status) }}>
+            Shipment Details: {selectedShipment.crop}
+          </h3>
+          <div className="grid-2">
+            <div>
+              <p><strong>Farmer:</strong> {selectedShipment.farmer}</p>
+              <p><strong>Trader:</strong> {selectedShipment.trader}</p>
+              <p><strong>Quantity:</strong> {selectedShipment.quantity}</p>
+            </div>
+            <div>
+              <p><strong>Status:</strong> <span style={{ color: getStatusColor(selectedShipment.status) }}>{selectedShipment.status}</span></p>
+              <p><strong>Expected Arrival:</strong> {selectedShipment.expectedArrival}</p>
+              <p><strong>Location:</strong> {selectedShipment.position.lat.toFixed(3)}, {selectedShipment.position.lng.toFixed(3)}</p>
+            </div>
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setSelectedShipment(null)}
+            style={{ marginTop: '10px' }}
+          >
+            Close Details
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { COLORS, getStatusColor } from '../constants/theme';
 
 interface TransportRoute {
   id: number;
@@ -68,16 +69,6 @@ const TransportTable: React.FC = () => {
 
   const [selectedRoute, setSelectedRoute] = useState<TransportRoute | null>(null);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'On-Time': return '#4CAF50';
-      case 'Delayed': return '#FF9800';
-      case 'Ghost Truck': return '#F44336';
-      case 'Route Deviation': return '#9C27B0';
-      default: return '#666';
-    }
-  };
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'On-Time': return '✅';
@@ -89,20 +80,14 @@ const TransportTable: React.FC = () => {
   };
 
   return (
-    <div style={{
-      border: '1px solid #ccc',
-      padding: '15px',
-      margin: '10px',
-      borderRadius: '8px',
-      backgroundColor: '#f9f9f9'
-    }}>
+    <div className="card">
       <h3>Transport Performance</h3>
 
       <div style={{ overflowX: 'auto' }}>
         <table style={{
           width: '100%',
           borderCollapse: 'collapse',
-          backgroundColor: 'white',
+          backgroundColor: COLORS.CARD_BACKGROUND,
           borderRadius: '6px',
           overflow: 'hidden',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -131,7 +116,7 @@ const TransportTable: React.FC = () => {
                 <td style={{ padding: '12px' }}>
                   <div>
                     <div style={{ fontWeight: 'bold' }}>{route.route}</div>
-                    <div style={{ fontSize: '0.8em', color: '#666' }}>
+                    <div style={{ fontSize: '0.8em', color: COLORS.TEXT_LIGHT }}>
                       {route.vehicleId} • {route.driver}
                     </div>
                   </div>
@@ -149,10 +134,18 @@ const TransportTable: React.FC = () => {
                 <td style={{ padding: '12px' }}>{route.tripStart}</td>
                 <td style={{ padding: '12px' }}>{route.deliveryTime}</td>
                 <td style={{ padding: '12px' }}>
-                  {route.delayMinutes > 0 ? `${route.delayMinutes}m` : '-'}
+                  {route.delayMinutes > 0 ? (
+                    <span style={{ color: COLORS.WARNING, fontWeight: 'bold' }}>
+                      {route.delayMinutes}m
+                    </span>
+                  ) : '-'}
                 </td>
                 <td style={{ padding: '12px' }}>
-                  {route.qrVerified ? '✅' : '❌'}
+                  {route.qrVerified ? (
+                    <span style={{ color: COLORS.SAFE }}>✅ Verified</span>
+                  ) : (
+                    <span style={{ color: COLORS.DANGER }}>❌ Not Verified</span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -166,10 +159,12 @@ const TransportTable: React.FC = () => {
           padding: '15px',
           backgroundColor: '#e8f5e8',
           borderRadius: '6px',
-          border: '1px solid #c8e6c9'
+          border: `1px solid ${COLORS.SAFE}`
         }}>
-          <h4>Route Details: {selectedRoute.route}</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9em' }}>
+          <h4 style={{ margin: '0 0 10px 0', color: getStatusColor(selectedRoute.status) }}>
+            Route Details: {selectedRoute.route}
+          </h4>
+          <div className="grid-2" style={{ fontSize: '0.9em' }}>
             <div><strong>Vehicle:</strong> {selectedRoute.vehicleId}</div>
             <div><strong>Driver:</strong> {selectedRoute.driver}</div>
             <div><strong>Trip Start:</strong> {selectedRoute.tripStart}</div>
@@ -179,16 +174,29 @@ const TransportTable: React.FC = () => {
             <div><strong>QR Verification:</strong> {selectedRoute.qrVerified ? 'Verified' : 'Not Verified'}</div>
             <div><strong>Status:</strong> {selectedRoute.status}</div>
           </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setSelectedRoute(null)}
+            style={{ marginTop: '10px' }}
+          >
+            Close Details
+          </button>
         </div>
       )}
 
-      <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#fff3e0', borderRadius: '6px' }}>
-        <h4 style={{ margin: '0 0 10px 0' }}>Performance Summary</h4>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9em' }}>
-          <span>On-Time Deliveries: 68%</span>
-          <span>Average Delay: 23 minutes</span>
-          <span>Ghost Trucks Detected: 3</span>
-          <span>Route Deviations: 2</span>
+      <div style={{
+        marginTop: '15px',
+        padding: '10px',
+        backgroundColor: '#fff3e0',
+        borderRadius: '6px',
+        border: `1px solid ${COLORS.WARNING}`
+      }}>
+        <h4 style={{ margin: '0 0 10px 0', color: COLORS.WARNING }}>Performance Summary</h4>
+        <div className="grid-2" style={{ fontSize: '0.9em' }}>
+          <div>On-Time Deliveries: <span style={{ color: COLORS.SAFE, fontWeight: 'bold' }}>68%</span></div>
+          <div>Average Delay: <span style={{ color: COLORS.WARNING, fontWeight: 'bold' }}>23 minutes</span></div>
+          <div>Ghost Trucks Detected: <span style={{ color: COLORS.DANGER, fontWeight: 'bold' }}>3</span></div>
+          <div>Route Deviations: <span style={{ color: COLORS.DANGER, fontWeight: 'bold' }}>2</span></div>
         </div>
       </div>
     </div>
