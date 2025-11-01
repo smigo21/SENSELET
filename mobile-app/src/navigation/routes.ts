@@ -10,11 +10,13 @@ export const ROUTES = {
   PRICE_VIEW: 'PriceView',
 
   // Trader routes
+  TRADER_DASHBOARD: 'TraderDashboard',
   MARKETPLACE: 'Marketplace',
   BOOK_TRANSPORT: 'BookTransport',
   CONFIRM_DELIVERY: 'ConfirmDelivery',
 
   // Transporter routes
+  TRANSPORTER_DASHBOARD: 'TransporterDashboard',
   TRIP_LIST: 'TripList',
   QR_SCAN: 'QRScan',
   ROUTE_STATUS: 'RouteStatus',
@@ -22,6 +24,12 @@ export const ROUTES = {
   // Shared routes
   PROFILE: 'Profile',
   NOTIFICATIONS: 'Notifications',
+
+  // Tab navigation routes
+  HOME_TAB: 'Home',
+  OFFERS_TAB: 'Offers',
+  NOTIFICATIONS_TAB: 'Notifications',
+  PROFILE_TAB: 'Profile',
 } as const;
 
 export type NavigationProp = {

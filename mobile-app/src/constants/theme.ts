@@ -13,6 +13,25 @@ export const theme = {
     success: '#28a745',
     warning: '#ffc107',
     info: '#17a2b8',
+    // Role-based colors
+    farmer: {
+      primary: '#2c7a2b', // Green/earthy
+      secondary: '#4a9b3a',
+      accent: '#6fbf73',
+      background: '#f1f8e9',
+    },
+    trader: {
+      primary: '#1976d2', // Blue/marketplace
+      secondary: '#42a5f5',
+      accent: '#64b5f6',
+      background: '#e3f2fd',
+    },
+    transporter: {
+      primary: '#ff6b35', // Orange/alert
+      secondary: '#ff8a65',
+      accent: '#ffab91',
+      background: '#fff3e0',
+    },
   },
   spacing: {
     xs: 4,

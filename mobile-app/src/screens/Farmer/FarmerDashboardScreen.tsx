@@ -153,7 +153,7 @@ const FarmerDashboardScreen = () => {
         }
       >
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { backgroundColor: theme.colors.farmer.primary }]}>
           <View style={styles.headerContent}>
             <Title style={styles.title}>Welcome, {user?.full_name}</Title>
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
